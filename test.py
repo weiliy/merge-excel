@@ -1,12 +1,42 @@
 #!/usr/bin/env python
 import unittest, merge_excel
-from subprocess import call
+import os
 import json
 
 class ProductTestCase(unittest.TestCase):
 
-#   def testCmdLineInput(self):
-#       call(['merge-excel', '-s Test01', '-c "Server Type"', '-c "Item A"', '-c "Item C"'])
+    def testCmdLineInput(self):
+        os.system(
+            'python merge_excel.py -d test_data -s Test01 -c "Server Type" -c "Item A" -c "Item C"'
+            )
+        targetData = [
+                {
+                    'Server Type': u'Type 01',
+                    'Item A': 11L,
+                    'Item C': 31L,
+                    'Date': '2015-11-04'
+                },
+                {
+                    'Server Type': u'Type 02',
+                    'Item A': 12L,
+                    'Item C': 32L,
+                    'Date': '2015-11-04'
+                },
+                {
+                    'Server Type': u'Type 01',
+                    'Item A': 11L,
+                    'Item C': 31L,
+                    'Date': '2015-11-05'
+                },
+                {
+                    'Server Type': u'Type 02',
+                    'Item A': 12L,
+                    'Item C': 32L,
+                    'Date': '2015-11-05'
+                }
+                ]
+        with open('output.json') as f:
+            self.assertEqual(json.loads(f.read()), targetData, 'Data not match')
 
     def testMergeExcel(self):
         excel_filename = 'test_data/2015_11_04-test_excel_sheet.xlsx'
