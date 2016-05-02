@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import unittest, merge_excel
 from subprocess import call
+import json
 
 class ProductTestCase(unittest.TestCase):
 
@@ -34,5 +35,30 @@ class ProductTestCase(unittest.TestCase):
             filename = excel_filename, 
             pattern = pattern)
         self.assertEqual(data_str, '2015-11-04', 'Data error')
+
+    def testMergeExcelData(self):
+        excel_filename1 = 'test_data/2015_11_04-test_excel_sheet.xlsx'
+        excel_filename2 = 'test_data/2015_11_04-test_excel_sheet.xlsx'
+        targetData = [
+                {
+                    'Server Type': u'Type 01',
+                    'Item A': 11L,
+                    'Item C': 31L,
+                    'Date': '2015-11-04'
+                },
+                {
+                    'Server Type': u'Type 02',
+                    'Item A': 12L,
+                    'Item C': 32L,
+                    'Date': '2015-11-04'
+                }
+                ]
+        targetData.extend(targetData)
+        exData = merge_excel.bulk_merge_excel(
+            filelist = [excel_filename1, excel_filename2],
+            sheet='Test01',
+            column=['Server Type', 'Item A', 'Item C']
+            )
+        self.assertEqual(exData, targetData, 'Data not match')
 
 if __name__ == '__main__': unittest.main()

@@ -38,6 +38,22 @@ def extractExcel(filename, date, sheet, column):
 def convert_file_date(filename, pattern):
     return '-'.join(re.findall(pattern, filename))
 
+def bulk_merge_excel(filelist, sheet, column):
+    result_data = [ ]
+    for filename in filelist:
+        result_data.extend(
+            extractExcel(
+                filename = filename,
+                sheet = sheet,
+                column = column,
+                date = convert_file_date(
+                    filename = filename,
+                    pattern = r'[0-9]+'
+                    )
+                )
+            )
+    return result_data
+
 def main(argv):
     script_help_str = 'merge-excel.py -d <excel_direcoty> -s <sheet_name> -c <table_colume_name> -t <er_to_capture_the_time_in_excel_filename'
     input_dir = ''
