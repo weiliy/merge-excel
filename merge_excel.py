@@ -7,7 +7,7 @@ import os
 import json
 
 def extractExcel(filename, date, sheet, column):
-    wb = openpyxl.load_workbook(filename = filename, read_only=True)
+    wb = openpyxl.load_workbook(filename = filename, read_only=True, data_only=True)
     ws = wb[sheet]
 
     headRowIdx = 0
@@ -29,8 +29,11 @@ def extractExcel(filename, date, sheet, column):
             else:
                 if cell.column in columnMap.keys():
                     row_data[columnMap[cell.column]] = cell.value
+                    # print 'save', columnMap[cell.column], row_data[columnMap[cell.column]]
 
-        if row_data != {}:
+        # print 'colunm', column
+        # print 'keys', row_data.keys()
+        if len(column) == len(row_data.keys()):
             row_data['Date'] = date
             resultData.append(row_data)
 
@@ -56,12 +59,35 @@ def bulk_merge_excel(filelist, sheet, column):
             )
     return result_data
 
+def merge_flow(input_dir, sheet_name, colume_list, output_name):
+    filelist = [ ]
+    print 'check files in', input_dir
+    for root, dirs, files in os.walk(input_dir):
+        for file in files:
+            if file.endswith('.xlsx'):
+                filename = os.path.join(root, file)
+                print '-', filename
+                filelist.append(filename)
+
+    data = bulk_merge_excel(
+        filelist = filelist,
+        sheet = sheet_name,
+        column = colume_list
+        )
+
+    with open('output.json', 'wb') as f:
+        f.write(
+            json.dumps(
+                data,
+                sort_keys=True,indent=4, separators=(',', ': ')
+            )
+        )
+
 def main(argv):
     script_help_str = 'merge-excel.py -d <excel_direcoty> -s <sheet_name> -c <table_colume_name> [-c <table_colume_name>]...'
     input_dir = ''
     sheet_name = ''
     colume_list = [ ] 
-    filelist = [ ]
     try:
         opts, args = getopt.getopt(argv,"hd:s:c:t:",["sheet=","colume="])
     except getopt.GetoptError:
@@ -82,29 +108,12 @@ def main(argv):
     print 'Sheet Name is ', sheet_name
     print 'Colume have ', colume_list
 
-    print 'check files in', input_dir
-    for root, dirs, files in os.walk(input_dir):
-        for file in files:
-            if file.endswith('.xlsx'):
-                filename = os.path.join(root, file)
-                print '-', filename
-                filelist.append(filename)
-
-    data = bulk_merge_excel(
-        filelist = filelist,
-        sheet = sheet_name,
-        column = colume_list
+    merge_flow(
+        input_dir = input_dir,
+        sheet_name = sheet_name,
+        colume_list = colume_list,
+        output_name = 'output.json'
         )
-
-    with open('output.json', 'wb') as f:
-        f.write(
-            json.dumps(
-                data, 
-                sort_keys=True,indent=4, separators=(',', ': ')
-            )
-        )
-
-    
 
 if __name__ == "__main__":
     main(sys.argv[1:])

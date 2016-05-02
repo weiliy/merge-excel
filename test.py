@@ -11,32 +11,33 @@ class ProductTestCase(unittest.TestCase):
             )
         targetData = [
                 {
-                    'Server Type': u'Type 01',
-                    'Item A': 11L,
-                    'Item C': 31L,
-                    'Date': '2015-11-04'
+                    u'Server Type': u'Type 01',
+                    u'Item A': 11,
+                    u'Item C': 31,
+                    u'Date': u'2015-11-04'
                 },
                 {
-                    'Server Type': u'Type 02',
-                    'Item A': 12L,
-                    'Item C': 32L,
-                    'Date': '2015-11-04'
+                    u'Server Type': u'Type 02',
+                    u'Item A': 12,
+                    u'Item C': 32,
+                    u'Date': u'2015-11-04'
                 },
                 {
-                    'Server Type': u'Type 01',
-                    'Item A': 11L,
-                    'Item C': 31L,
-                    'Date': '2015-11-05'
+                    u'Server Type': u'Type 01',
+                    u'Item A': 11,
+                    u'Item C': 31,
+                    u'Date': u'2015-11-05'
                 },
                 {
-                    'Server Type': u'Type 02',
-                    'Item A': 12L,
-                    'Item C': 32L,
-                    'Date': '2015-11-05'
+                    u'Server Type': u'Type 02',
+                    u'Item A': 12,
+                    u'Item C': 32,
+                    u'Date': u'2015-11-05'
                 }
                 ]
         with open('output.json') as f:
-            self.assertEqual(json.loads(f.read()), targetData, 'Data not match')
+            exData = json.loads(f.read())
+            self.assertEqual(exData, targetData, 'Data not match' + str(exData))
 
     def testMergeExcel(self):
         excel_filename = 'test_data/2015_11_04-test_excel_sheet.xlsx'
@@ -55,7 +56,6 @@ class ProductTestCase(unittest.TestCase):
                     'Date': '2015-11-04'
                 }
                 ]
-        # print 'target', targetData
         self.assertEqual(exData, targetData, 'Data not match')
 
     def testGetFileTime(self):
