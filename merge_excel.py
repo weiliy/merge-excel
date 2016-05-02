@@ -5,6 +5,7 @@ import openpyxl
 import re
 import os
 import json
+import csv
 
 def extractExcel(filename, date, sheet, column):
     wb = openpyxl.load_workbook(filename = filename, read_only=True, data_only=True)
@@ -82,6 +83,13 @@ def merge_flow(input_dir, sheet_name, colume_list, output_name):
                 sort_keys=True,indent=4, separators=(',', ': ')
             )
         )
+
+    with open('output.csv', 'w') as csvfile:
+        fieldnames = data[0].keys()
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in data:
+            writer.writerow(row)
 
 def main(argv):
     script_help_str = 'merge-excel.py -d <excel_direcoty> -s <sheet_name> -c <table_colume_name> [-c <table_colume_name>]...'
