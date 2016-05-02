@@ -2,6 +2,7 @@
 __metaclass__ = type
 import sys, getopt
 import openpyxl
+import re
 
 def extractExcel(filename, date, sheet, column):
     wb = openpyxl.load_workbook(filename = filename, read_only=True)
@@ -33,6 +34,9 @@ def extractExcel(filename, date, sheet, column):
 
     # print resultData
     return resultData
+
+def convert_file_date(filename, pattern):
+    return '-'.join(re.findall(pattern, filename))
 
 def main(argv):
     script_help_str = 'merge-excel.py -d <excel_direcoty> -s <sheet_name> -c <table_colume_name> -t <er_to_capture_the_time_in_excel_filename'

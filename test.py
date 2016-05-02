@@ -27,4 +27,12 @@ class ProductTestCase(unittest.TestCase):
         # print 'target', targetData
         self.assertEqual(exData, targetData, 'Data not match')
 
+    def testGetFileTime(self):
+        excel_filename = '2015_11_04-test_excel_sheet.xlsx'
+        pattern = r'[0-9]+'
+        data_str = merge_excel.convert_file_date(
+            filename = excel_filename, 
+            pattern = pattern)
+        self.assertEqual(data_str, '2015-11-04', 'Data error')
+
 if __name__ == '__main__': unittest.main()
